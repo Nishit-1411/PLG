@@ -1,0 +1,27 @@
+https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config
+
+scrape_configs:
+  - job_name: 'ec2_service_discovery'
+    ec2_sd_configs:
+      - region: us-east-1
+        access_key: 
+        secret_key: 
+        port: 9100
+        filters:
+          - name: tag:monitoring
+            values:
+              - true
+    relabel_configs:
+      - source_labels: [__meta_ec2_tag_Name]
+        target_label: instance_name
+      - source_labels: [__meta_ec2_instance_id]
+        target_label: instance_id
+      - source_labels: [__meta_ec2_instance_type]
+        target_label: server_config
+      - source_labels: [__meta_ec2_tag_Env]
+        target_label: env
+      - source_labels: [__meta_ec2_availability_zone]
+        target_label: zone
+      - source_labels: [__meta_ec2_public_ip]
+        replacement: ${1}:9100
+        target_label: __address__
