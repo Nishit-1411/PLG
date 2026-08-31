@@ -1,0 +1,28 @@
+https://gist.github.com/devops-school/8b6b9ea784e0f5f0b0089d7b8e643124
+
+systemctl is-active apache2
+
+#!/bin/bash
+
+# Check if the service is active
+if systemctl is-active apache2  >/dev/null 2>&1;
+then
+    echo 'apache_service_status{app="test",env="dev",instance="webserver",job="apache_service_status"} 1' > apache_status.txt # Output 1 if service is active
+else
+    echo 'apache_service_status{app="test",env="dev",instance="webserver",job="apache_service_status"} 0' > apache_status.txt # Output 0 if service is inactive or not found
+fi
+
+curl -X POST -H "Content-Type: text/plain" --data-binary @apache_status.txt http://20.204.42.78:9091/metrics/job/apache_service_status
+
+
+
+
+#!/bin/bash
+
+# Check if the service is active
+if systemctl is-active apache2  >/dev/null 2>&1;
+then
+    echo 'apache_service_status 1' > apache_status.txt # Output 1 if service is active
+else
+    echo 'apache_service_status 0' > apache_status.txt # Output 0 if service is inactive or not found
+fi
